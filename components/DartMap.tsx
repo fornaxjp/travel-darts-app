@@ -286,7 +286,7 @@ export function DartMap({
       <div ref={wrapperRef} className={`${styles.mapShell} rounded-[26px]`}>
         <img
           ref={imageRef}
-          src="/japan-map.png"
+          src="/japan-map.png?v=20260505-1"
           alt="日本地図"
           className="block h-auto w-full"
           onLoad={() => setImageReady(true)}
