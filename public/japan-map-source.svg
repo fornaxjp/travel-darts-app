@@ -1,0 +1,35 @@
+<svg width="840" height="1260" viewBox="0 0 840 1260" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="840" height="1260" rx="48" fill="#F8F1E4"/>
+  <rect x="22" y="22" width="796" height="1216" rx="36" fill="#FFF9EF" stroke="#111111" stroke-width="6"/>
+  <g opacity="0.18">
+    <path d="M70 86H772" stroke="#111111" stroke-width="3" stroke-dasharray="10 14"/>
+    <path d="M70 1174H772" stroke="#111111" stroke-width="3" stroke-dasharray="10 14"/>
+  </g>
+  <g>
+    <path d="M592 114C610 88 650 72 688 76C736 82 770 120 770 164C770 210 736 244 690 244C642 244 602 214 584 176C575 158 579 136 592 114Z" fill="#CFE8FF" stroke="#111111" stroke-width="6"/>
+    <path d="M578 274C598 242 638 224 680 228C720 231 758 259 770 302C782 344 766 387 735 415C699 449 650 461 611 446C576 432 545 398 542 360C539 329 559 305 578 274Z" fill="#D6EFAF" stroke="#111111" stroke-width="6"/>
+    <path d="M488 404C520 372 568 356 620 360C676 364 730 394 744 438C759 484 730 526 676 550C624 573 552 570 504 544C462 522 434 484 439 452C443 431 459 421 488 404Z" fill="#FFE19B" stroke="#111111" stroke-width="6"/>
+    <path d="M418 524C466 488 534 474 606 476C676 478 748 502 768 550C789 602 758 650 700 682C640 716 552 728 474 714C403 702 330 668 316 614C305 572 345 547 418 524Z" fill="#F9C58C" stroke="#111111" stroke-width="6"/>
+    <path d="M362 694C420 666 490 658 560 662C635 666 706 692 718 736C731 783 683 821 610 840C530 861 433 858 357 835C296 817 236 786 234 748C232 720 275 702 362 694Z" fill="#F6A5A5" stroke="#111111" stroke-width="6"/>
+    <path d="M304 858C352 846 418 844 478 850C530 856 580 875 586 904C593 939 550 969 490 985C420 1004 332 1004 267 986C219 972 175 947 174 919C174 888 219 871 304 858Z" fill="#F3B3D0" stroke="#111111" stroke-width="6"/>
+    <path d="M242 982C282 972 334 972 378 979C420 986 452 1006 454 1033C456 1060 428 1086 387 1101C336 1120 270 1121 219 1108C181 1098 147 1080 144 1055C141 1026 173 1002 242 982Z" fill="#D2C3FF" stroke="#111111" stroke-width="6"/>
+    <path d="M520 820C548 810 585 807 621 815C656 823 683 842 685 865C687 891 658 910 620 922C575 936 519 937 475 925C442 916 412 900 410 879C408 849 442 832 520 820Z" fill="#A8E6CF" stroke="#111111" stroke-width="6"/>
+    <path d="M159 829C194 812 238 808 280 817C319 826 351 846 352 874C353 907 318 930 270 945C212 964 141 965 90 948C52 936 18 915 16 888C14 856 47 838 159 829Z" fill="#FFD8B1" stroke="#111111" stroke-width="6"/>
+    <path d="M82 1093C108 1083 142 1082 170 1088C194 1094 213 1107 214 1124C215 1143 197 1157 171 1166C138 1178 95 1179 65 1171C42 1165 21 1154 20 1138C19 1118 40 1101 82 1093Z" fill="#FFB7B2" stroke="#111111" stroke-width="6"/>
+  </g>
+  <g fill="#111111" font-family="'Zen Kaku Gothic New', sans-serif" text-anchor="middle">
+    <text x="676" y="170" font-size="26" font-weight="700">北海道</text>
+    <text x="668" y="340" font-size="22" font-weight="700">東北</text>
+    <text x="612" y="470" font-size="22" font-weight="700">関東</text>
+    <text x="560" y="618" font-size="22" font-weight="700">中部</text>
+    <text x="512" y="774" font-size="22" font-weight="700">関西</text>
+    <text x="380" y="922" font-size="22" font-weight="700">中国・四国</text>
+    <text x="220" y="890" font-size="22" font-weight="700">九州</text>
+    <text x="116" y="1146" font-size="20" font-weight="700">沖縄</text>
+  </g>
+  <g fill="#111111" font-family="'Zen Kaku Gothic New', sans-serif">
+    <text x="80" y="92" font-size="40" font-weight="700">旅●ダーツ</text>
+    <text x="80" y="132" font-size="20" opacity="0.7">アニメーション確認用マップ</text>
+    <text x="80" y="1188" font-size="18" opacity="0.6">添付の都道府県カラーマップがあれば public/japan-map.png に差し替えてください</text>
+  </g>
+</svg>
