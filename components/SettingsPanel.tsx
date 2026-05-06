@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import {
   AREA_OPTIONS,
   BUDGET_OPTIONS,
@@ -33,20 +35,17 @@ type ChipProps = {
   active: boolean;
   label: string;
   onClick: () => void;
-  accent?: boolean;
 };
 
-function FilterChip({ active, label, onClick, accent = false }: ChipProps) {
+function FilterChip({ active, label, onClick }: ChipProps) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-4 py-2.5 text-sm font-medium shadow-soft transition ${
+      className={`rounded-full border px-4 py-2.5 text-sm font-medium transition ${
         active
-          ? accent
-            ? "border-shuiro/20 bg-shuiro/10 text-shuiro"
-            : "border-sumi bg-sumi text-white"
-          : "border-black/10 bg-white/80 text-black/70 hover:bg-white"
+          ? "border-brand/20 bg-brand text-white shadow-soft"
+          : "border-black/[0.06] bg-[#f7f9fc] text-black/68 hover:border-black/[0.1] hover:bg-white"
       }`}
     >
       {label}
@@ -57,9 +56,26 @@ function FilterChip({ active, label, onClick, accent = false }: ChipProps) {
 function SectionTitle({ title, caption }: { title: string; caption?: string }) {
   return (
     <div className="space-y-1">
-      <h3 className="font-heading text-[1.15rem] font-semibold text-sumi">{title}</h3>
-      {caption ? <p className="text-sm leading-6 text-black/60">{caption}</p> : null}
+      <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-sumi">{title}</h3>
+      {caption ? <p className="text-sm leading-6 text-black/52">{caption}</p> : null}
     </div>
+  );
+}
+
+function SectionShell({
+  title,
+  caption,
+  children,
+}: {
+  title: string;
+  caption?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="rounded-[28px] border border-black/[0.06] bg-white/88 p-5 shadow-soft">
+      <SectionTitle title={title} caption={caption} />
+      <div className="mt-4">{children}</div>
+    </section>
   );
 }
 
@@ -75,46 +91,47 @@ export function SettingsPanel({
 }: SettingsPanelProps) {
   return (
     <section className="space-y-8">
-      <div className="rounded-[26px] border border-black/10 bg-white/75 px-5 py-5 shadow-soft">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/40">
-          Match Count
+      <div className="relative overflow-hidden rounded-[30px] border border-black/[0.06] bg-white/92 px-6 py-6 shadow-elevated">
+        <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-brand/10 blur-3xl" />
+        <p className="relative text-[11px] font-semibold uppercase tracking-[0.22em] text-black/40">
+          Available Destinations
         </p>
-        <div className="mt-3 flex items-end justify-between gap-4">
+        <div className="relative mt-4 flex items-end justify-between gap-4">
           <div>
             <p className="font-heading text-3xl font-semibold tracking-tight text-sumi">
               {matchCount}
             </p>
-            <p className="mt-1 text-sm text-black/60">現在の条件で候補に残る行き先</p>
+            <p className="mt-2 text-sm leading-6 text-black/58">現在の条件に合う旅先</p>
           </div>
-          <p className="rounded-full bg-black/[0.05] px-3 py-1 text-xs font-medium text-black/60">
+          <p className="rounded-full bg-black/[0.04] px-3 py-1 text-xs font-medium text-black/55">
             47都道府県を収録
           </p>
         </div>
       </div>
 
-      <div className="space-y-3">
-        <SectionTitle title="的のスタイル" />
+      <SectionShell title="的のスタイル" caption="ダーツの見た目だけを切り替えます。">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {DART_STYLES.map((style) => (
             <button
               key={style.id}
               type="button"
               onClick={() => onSelectStyle(style.id)}
-              className={`rounded-[22px] border px-4 py-4 text-left shadow-soft transition ${
+              className={`rounded-[24px] border px-4 py-4 text-left transition ${
                 selectedStyleId === style.id
-                  ? "border-shuiro/20 bg-[#fbf1ee] text-sumi"
-                  : "border-black/10 bg-white/80 text-black/80 hover:bg-white"
+                  ? "border-brand/20 bg-brand/5 text-sumi shadow-soft"
+                  : "border-black/[0.06] bg-[#f8fafc] text-black/80 hover:border-black/[0.1] hover:bg-white"
               }`}
             >
-              <div className="text-[1.75rem]">{style.emoji}</div>
-              <p className="mt-3 text-sm font-medium">{style.label}</p>
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-[1.5rem] shadow-[inset_0_0_0_1px_rgba(15,23,42,0.05)]">
+                {style.emoji}
+              </div>
+              <p className="mt-3 text-sm font-medium text-black/82">{style.label}</p>
             </button>
           ))}
         </div>
-      </div>
+      </SectionShell>
 
-      <div className="space-y-3">
-        <SectionTitle title="エリア" caption="全国を選ぶと、地域の絞り込みを外せます。" />
+      <SectionShell title="エリア" caption="全国を選ぶと、地域の絞り込みを外せます。">
         <div className="flex flex-wrap gap-3">
           {AREA_OPTIONS.map((area) => (
             <FilterChip
@@ -125,10 +142,9 @@ export function SettingsPanel({
             />
           ))}
         </div>
-      </div>
+      </SectionShell>
 
-      <div className="space-y-3">
-        <SectionTitle title="予算" />
+      <SectionShell title="予算">
         <div className="flex flex-wrap gap-3">
           {BUDGET_OPTIONS.map((budget) => (
             <FilterChip
@@ -136,14 +152,12 @@ export function SettingsPanel({
               active={filters.budgets.includes(budget)}
               label={budget}
               onClick={() => onToggleBudget(budget)}
-              accent
             />
           ))}
         </div>
-      </div>
+      </SectionShell>
 
-      <div className="space-y-3">
-        <SectionTitle title="期間" />
+      <SectionShell title="期間">
         <div className="flex flex-wrap gap-3">
           {DURATION_OPTIONS.map((duration) => (
             <FilterChip
@@ -154,10 +168,9 @@ export function SettingsPanel({
             />
           ))}
         </div>
-      </div>
+      </SectionShell>
 
-      <div className="space-y-3">
-        <SectionTitle title="旅のスタイル" />
+      <SectionShell title="旅のスタイル">
         <div className="flex flex-wrap gap-3">
           {STYLE_OPTIONS.map((style) => (
             <FilterChip
@@ -165,11 +178,10 @@ export function SettingsPanel({
               active={filters.styles.includes(style)}
               label={style}
               onClick={() => onToggleStyle(style)}
-              accent
             />
           ))}
         </div>
-      </div>
+      </SectionShell>
     </section>
   );
 }

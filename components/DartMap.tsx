@@ -278,9 +278,12 @@ export function DartMap({
   return (
     <section className="space-y-5">
       <div
-        className={`${styles.statusPill} rounded-full border border-black/10 bg-white/80 px-4 py-3 text-sm text-black/70 shadow-soft`}
+        className={`${styles.statusPill} rounded-[22px] border border-black/[0.06] bg-white/92 px-4 py-3 shadow-soft`}
       >
-        {helperText}
+        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-black/38">
+          Current Shortlist
+        </p>
+        <p className="mt-1 text-sm text-black/72">{helperText}</p>
       </div>
 
       <div ref={wrapperRef} className={`${styles.mapShell} rounded-[28px]`}>
@@ -299,18 +302,16 @@ export function DartMap({
           type="button"
           onClick={onThrow}
           disabled={disabled}
-          className={`${styles.throwButton} flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl bg-shuiro px-4 py-4 text-sm font-medium text-white shadow-soft disabled:cursor-not-allowed disabled:bg-black/25 disabled:shadow-none`}
+          className={`${styles.throwButton} flex items-center justify-center whitespace-nowrap rounded-2xl bg-brand px-4 py-4 text-sm font-medium text-white shadow-soft disabled:cursor-not-allowed disabled:bg-black/25 disabled:shadow-none`}
         >
-          <span aria-hidden="true">🎯</span>
-          <span>ダーツを投げる！</span>
+          <span>ダーツを投げる</span>
         </button>
         <button
           type="button"
           onClick={onReset}
-          className="flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl border border-black/10 bg-white/80 px-4 py-4 text-sm font-medium text-black/80 shadow-soft transition hover:-translate-y-0.5"
+          className="flex items-center justify-center whitespace-nowrap rounded-2xl border border-black/[0.06] bg-white/90 px-4 py-4 text-sm font-medium text-black/78 shadow-soft transition hover:-translate-y-0.5"
         >
-          <span aria-hidden="true">↺</span>
-          <span>もう一回</span>
+          <span>リセット</span>
         </button>
       </div>
     </section>

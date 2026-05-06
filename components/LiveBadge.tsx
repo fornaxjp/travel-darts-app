@@ -14,10 +14,10 @@ export function LiveBadge({
   shareLabel,
 }: LiveBadgeProps) {
   return (
-    <section className="space-y-4 rounded-[26px] border border-black/10 bg-white/90 p-4 shadow-soft">
+    <section className="space-y-4 rounded-[28px] border border-black/[0.06] bg-white/92 p-5 shadow-soft">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-3">
-          <span className="flex items-center gap-2 rounded-full border border-shuiro/15 bg-shuiro/10 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-shuiro">
+          <span className="flex items-center gap-2 rounded-full border border-shuiro/15 bg-shuiro/8 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-shuiro">
             <span className="inline-block h-2 w-2 rounded-full bg-shuiro animate-live-blink" />
             LIVE
           </span>
@@ -25,16 +25,16 @@ export function LiveBadge({
             <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-black/40">
               Room {roomId}
             </p>
-            <p className="mt-1 text-sm text-black/80">{statusLabel}</p>
+            <p className="mt-1 text-sm text-black/76">{statusLabel}</p>
           </div>
         </div>
 
         <button
           type="button"
           onClick={onShareRoom}
-          className="rounded-full border border-black/10 bg-white px-3 py-2 text-xs font-medium text-black/70 shadow-soft transition hover:-translate-y-0.5"
+          className="rounded-full border border-black/[0.06] bg-[#f8fafc] px-3 py-2 text-xs font-medium text-black/70 transition hover:bg-white"
         >
-          URL共有
+          共有URL
         </button>
       </div>
 
@@ -42,14 +42,14 @@ export function LiveBadge({
         {participants.map((participant) => (
           <span
             key={participant}
-            className="rounded-full border border-black/10 bg-[#faf6ef] px-3 py-1 text-xs font-medium text-black/70"
+            className="rounded-full border border-black/[0.06] bg-[#f8fafc] px-3 py-1 text-xs font-medium text-black/68"
           >
             {participant}
           </span>
         ))}
       </div>
 
-      <p className="text-xs leading-6 text-black/60">{shareLabel}</p>
+      <p className="text-xs leading-6 text-black/52">{shareLabel}</p>
     </section>
   );
 }

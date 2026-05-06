@@ -442,28 +442,28 @@ export function TravelDartsApp() {
 
   const helperText =
     visibleDestinations.length > 0
-      ? `${visibleDestinations.length}件の候補から狙い撃ち。${selectedDestination ? `前回は ${selectedDestination.prefecture}` : "準備OK"}`
+      ? `候補は ${visibleDestinations.length} 件。${selectedDestination ? `前回の結果は ${selectedDestination.prefecture}` : "旅先を選ぶ準備ができています"}`
       : "条件に合う行き先がありません。設定タブでフィルターを調整してください";
 
   return (
     <main className="px-4 py-8 sm:px-6">
-      <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-[620px] flex-col gap-5">
-        <section className="paper-panel rounded-[30px] border border-black/10 p-6 shadow-elevated">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+      <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-[760px] flex-col gap-5">
+        <section className="paper-panel rounded-[34px] border border-black/[0.06] p-6 shadow-elevated sm:p-7">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-black/40">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-black/36">
                 Travel Darts
               </p>
-              <h1 className="mt-3 font-heading text-[2.3rem] font-semibold leading-[0.98] tracking-tight text-sumi sm:text-[2.8rem]">
+              <h1 className="mt-3 font-heading text-[2.2rem] font-semibold leading-[0.98] tracking-tight text-sumi sm:text-[2.9rem]">
                 旅●ダーツ
               </h1>
-              <p className="mt-3 max-w-[30rem] text-sm leading-7 text-black/60">
-                旅先をひと投げで決める、少し落ち着いた雰囲気のトラベルダーツ。
+              <p className="mt-3 max-w-[36rem] text-sm leading-7 text-black/56">
+                旅先をランダムに選ぶ体験を、できるだけ静かで洗練された UI にまとめたトラベルダーツです。
               </p>
             </div>
-            <div className="w-fit rounded-[20px] border border-black/10 bg-white/70 px-4 py-3 text-left shadow-soft sm:min-w-[9rem] sm:text-right">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/40">
-                Mode
+            <div className="w-fit rounded-[22px] border border-black/[0.06] bg-white/88 px-4 py-3 text-left shadow-soft sm:min-w-[10rem] sm:text-right">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/38">
+                Travel Mode
               </p>
               <p className="mt-1 text-sm font-medium text-black/80">
                 {mode === "group" ? "みんなで" : "ひとり旅"}
@@ -471,7 +471,7 @@ export function TravelDartsApp() {
             </div>
           </div>
 
-          <div className="mt-6 rounded-[20px] bg-black/[0.04] p-1.5">
+          <div className="mt-6 rounded-[22px] bg-black/[0.04] p-1.5">
             <div className="grid grid-cols-2 gap-1.5">
               <button
                 type="button"
@@ -479,7 +479,7 @@ export function TravelDartsApp() {
                 className={`rounded-[16px] px-4 py-3 text-sm font-medium transition ${
                   mode === "solo"
                     ? "bg-white text-sumi shadow-soft"
-                    : "text-black/60 hover:text-black/80"
+                    : "text-black/54 hover:text-black/80"
                 }`}
               >
                 ひとり旅
@@ -490,7 +490,7 @@ export function TravelDartsApp() {
                 className={`rounded-[16px] px-4 py-3 text-sm font-medium transition ${
                   mode === "group"
                     ? "bg-white text-sumi shadow-soft"
-                    : "text-black/60 hover:text-black/80"
+                    : "text-black/54 hover:text-black/80"
                 }`}
               >
                 みんなで
@@ -509,7 +509,7 @@ export function TravelDartsApp() {
           />
         ) : null}
 
-        <section className="paper-panel flex-1 rounded-[30px] border border-black/10 p-5 shadow-elevated sm:p-6">
+        <section className="paper-panel flex-1 rounded-[34px] border border-black/[0.06] p-5 shadow-elevated sm:p-6">
           {activeTab === "settings" ? (
             <SettingsPanel
               filters={filters}
@@ -524,9 +524,9 @@ export function TravelDartsApp() {
           ) : null}
 
           {activeTab === "darts" ? (
-            <div className="space-y-4">
+            <div className="space-y-5">
               {!hasSupabaseEnv() && mode === "group" ? (
-                <div className="rounded-[22px] border border-[#d5b88e] bg-[#f9f1e2] px-4 py-4 text-sm leading-7 text-black/70 shadow-soft">
+                <div className="rounded-[24px] border border-[#d7deea] bg-[#f8fbff] px-4 py-4 text-sm leading-7 text-black/62 shadow-soft">
                   Supabase の環境変数が未設定のため、今はこの端末上で演出確認まで動作します。Realtime 同期を有効にする場合は
                   <span className="font-semibold"> .env.local </span>
                   に
@@ -548,12 +548,12 @@ export function TravelDartsApp() {
                 helperText={helperText}
               />
 
-              <div className="rounded-[22px] border border-black/10 bg-white/80 px-4 py-4 shadow-soft">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-black/40">
-                  Current Settings
+              <div className="rounded-[24px] border border-black/[0.06] bg-white/90 px-5 py-5 shadow-soft">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-black/38">
+                  Selection
                 </p>
-                <p className="mt-2 text-sm leading-7 text-black/70">
-                  的スタイルは「{selectedStyle.emoji} {selectedStyle.label}」。命中後は少し間を置いて、結果タブへ自動で移動します。
+                <p className="mt-2 text-sm leading-7 text-black/62">
+                  現在のマーカーは「{selectedStyle.emoji} {selectedStyle.label}」。着弾後は少し間を置いて、結果タブへ自動で切り替わります。
                 </p>
               </div>
             </div>
@@ -569,7 +569,7 @@ export function TravelDartsApp() {
           ) : null}
         </section>
 
-        <nav className="sticky bottom-4 z-10 rounded-[24px] border border-black/10 bg-white/90 p-1.5 shadow-elevated backdrop-blur">
+        <nav className="sticky bottom-4 z-10 rounded-[26px] border border-black/[0.06] bg-white/80 p-1.5 shadow-elevated backdrop-blur-xl">
           <ul className="grid grid-cols-3 gap-2">
             {tabs.map((tab) => (
               <li key={tab.id}>
@@ -578,8 +578,8 @@ export function TravelDartsApp() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`w-full rounded-[18px] px-3 py-3 text-sm font-medium transition ${
                     activeTab === tab.id
-                      ? "bg-sumi text-white shadow-soft"
-                      : "bg-transparent text-black/60 hover:text-black/80"
+                      ? "bg-brand text-white shadow-soft"
+                      : "bg-transparent text-black/52 hover:text-black/78"
                   }`}
                 >
                   {tab.label}

@@ -17,12 +17,16 @@ const config: Config = {
         cream: "#fffaf1",
         sand: "#e7ddd0",
         mist: "#fbf7f0",
+        brand: "#1a73e8",
+        cloud: "#eef4ff",
+        line: "#dbe3ef",
+        slate: "#667085",
       },
       boxShadow: {
         pop: "6px 6px 0 0 #000",
         "pop-sm": "4px 4px 0 0 #000",
-        soft: "0 12px 28px rgba(45, 41, 38, 0.08)",
-        elevated: "0 22px 48px rgba(45, 41, 38, 0.11)",
+        soft: "0 12px 30px rgba(15, 23, 42, 0.07)",
+        elevated: "0 24px 56px rgba(15, 23, 42, 0.09)",
       },
       fontFamily: {
         heading: "var(--font-heading)",
