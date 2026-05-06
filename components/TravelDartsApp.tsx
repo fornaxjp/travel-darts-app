@@ -12,6 +12,9 @@ import {
   DART_STYLES,
   destinations,
   findDestinationByPrefecture,
+  formatBudgetCaption,
+  formatBudgetLabel,
+  getDestinationBudgetTags,
   type AreaTag,
   type DartStyleId,
   type Destination,
@@ -97,6 +100,7 @@ export function TravelDartsApp() {
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
   const [selectedStyleId, setSelectedStyleId] = useState<DartStyleId>("pin");
   const [lastThrowStyleId, setLastThrowStyleId] = useState<DartStyleId>("pin");
+  const [originPrefecture, setOriginPrefecture] = useState("");
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [currentThrow, setCurrentThrow] = useState<ThrowAnimation | null>(null);
   const [roomId, setRoomId] = useState(roomFromUrl);
@@ -113,13 +117,16 @@ export function TravelDartsApp() {
     () =>
       destinations.filter((destination) => {
         const areaMatch = isAreaMatch(filters.areas, destination);
-        const budgetMatch = matchesAny(filters.budgets, destination.budgetTags);
+        const budgetMatch = matchesAny(
+          filters.budgets,
+          getDestinationBudgetTags(destination, originPrefecture),
+        );
         const durationMatch = matchesAny(filters.durations, destination.durationTags);
         const styleMatch = matchesAny(filters.styles, destination.styleTags);
 
         return areaMatch && budgetMatch && durationMatch && styleMatch;
       }),
-    [filters],
+    [filters, originPrefecture],
   );
 
   const syncRoomInUrl = useCallback(
@@ -171,12 +178,27 @@ export function TravelDartsApp() {
       return;
     }
 
+    const storedOrigin = window.localStorage.getItem("travel-darts-origin-prefecture") ?? "";
     const stored =
       window.localStorage.getItem("travel-darts-participant-name") ?? makeParticipantName();
+    setOriginPrefecture(storedOrigin);
     window.localStorage.setItem("travel-darts-participant-name", stored);
     setParticipantName(stored);
     setParticipants([stored]);
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    if (originPrefecture) {
+      window.localStorage.setItem("travel-darts-origin-prefecture", originPrefecture);
+      return;
+    }
+
+    window.localStorage.removeItem("travel-darts-origin-prefecture");
+  }, [originPrefecture]);
 
   useEffect(() => {
     return () => {
@@ -367,6 +389,14 @@ export function TravelDartsApp() {
     }));
   }, []);
 
+  const handleOriginChange = useCallback((prefecture: string) => {
+    setOriginPrefecture(prefecture);
+  }, []);
+
+  const handleOriginClear = useCallback(() => {
+    setOriginPrefecture("");
+  }, []);
+
   const handleToggleDuration = useCallback((duration: TravelDurationTag) => {
     setFilters((current) => ({
       ...current,
@@ -439,6 +469,11 @@ export function TravelDartsApp() {
     { id: "result", label: "結果" },
   ];
   const selectedStyle = DART_STYLES.find((style) => style.id === selectedStyleId) ?? DART_STYLES[0];
+  const selectedBudgetTitle = originPrefecture ? "現在地からの目安予算" : "目安予算";
+  const selectedBudgetLabel = selectedDestination
+    ? formatBudgetLabel(selectedDestination, originPrefecture)
+    : "";
+  const selectedBudgetCaption = formatBudgetCaption(originPrefecture);
 
   const helperText =
     visibleDestinations.length > 0
@@ -514,7 +549,10 @@ export function TravelDartsApp() {
             <SettingsPanel
               filters={filters}
               selectedStyleId={selectedStyleId}
+              originPrefecture={originPrefecture}
               onSelectStyle={setSelectedStyleId}
+              onChangeOrigin={handleOriginChange}
+              onClearOrigin={handleOriginClear}
               onToggleArea={handleToggleArea}
               onToggleBudget={handleToggleBudget}
               onToggleDuration={handleToggleDuration}
@@ -553,7 +591,10 @@ export function TravelDartsApp() {
                   Selection
                 </p>
                 <p className="mt-2 text-sm leading-7 text-black/62">
-                  現在のマーカーは「{selectedStyle.emoji} {selectedStyle.label}」。着弾後は少し間を置いて、結果タブへ自動で切り替わります。
+                  現在のマーカーは「{selectedStyle.emoji} {selectedStyle.label}」。
+                  {originPrefecture
+                    ? ` 予算は ${originPrefecture} 発を前提に計算します。`
+                    : " 現在地を入れると、予算の目安がもっと現実的になります。"}
                 </p>
               </div>
             </div>
@@ -562,6 +603,9 @@ export function TravelDartsApp() {
           {activeTab === "result" ? (
             <ResultPanel
               destination={selectedDestination}
+              budgetTitle={selectedBudgetTitle}
+              budgetLabel={selectedBudgetLabel}
+              budgetCaption={selectedBudgetCaption}
               onRetry={handleRetry}
               onShare={handleShareResult}
               shareLabel={resultShareLabel}

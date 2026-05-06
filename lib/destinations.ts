@@ -1,13 +1,11 @@
 export type AreaTag =
   | "全国"
-  | "北海道"
   | "東北"
   | "関東"
   | "中部"
   | "関西"
   | "中国・四国"
-  | "九州"
-  | "沖縄";
+  | "九州";
 
 export type TravelBudgetTag = "〜2万" | "2〜5万" | "5万〜";
 export type TravelDurationTag = "日帰り" | "1泊2日" | "2泊3日" | "それ以上";
@@ -49,15 +47,23 @@ export type DartStyleOption = {
 
 export const AREA_OPTIONS: AreaTag[] = [
   "全国",
-  "北海道",
   "東北",
   "関東",
   "中部",
   "関西",
   "中国・四国",
   "九州",
-  "沖縄",
 ];
+
+export const AREA_LABELS: Record<AreaTag, string> = {
+  全国: "全国",
+  東北: "東北・北海道",
+  関東: "関東",
+  中部: "中部",
+  関西: "関西",
+  "中国・四国": "中国・四国",
+  九州: "九州・沖縄",
+};
 
 export const BUDGET_OPTIONS: TravelBudgetTag[] = ["〜2万", "2〜5万", "5万〜"];
 export const DURATION_OPTIONS: TravelDurationTag[] = [
@@ -93,7 +99,7 @@ export const destinations: Destination[] = [
     highlight: "富良野の花畑から札幌グルメまで、スケールの大きな景色を一気に楽しめます。",
     x: 0.8,
     y: 0.173,
-    areas: ["北海道"],
+    areas: ["東北"],
     budgetTags: ["2〜5万", "5万〜"],
     durationTags: ["2泊3日", "それ以上"],
     styleTags: ["グルメ", "自然", "アクティビティ"],
@@ -691,7 +697,7 @@ export const destinations: Destination[] = [
     highlight: "青い海とゆるやかな島時間で、気分をまるごと切り替えられます。",
     x: 0.836,
     y: 0.884,
-    areas: ["沖縄"],
+    areas: ["九州"],
     budgetTags: ["5万〜"],
     durationTags: ["2泊3日", "それ以上"],
     styleTags: ["自然", "グルメ", "アクティビティ"],
@@ -700,4 +706,111 @@ export const destinations: Destination[] = [
 
 export function findDestinationByPrefecture(prefecture: string) {
   return destinations.find((destination) => destination.prefecture === prefecture);
+}
+
+export const PREFECTURE_OPTIONS = destinations.map(
+  (destination) => destination.prefecture,
+);
+
+const MAINLAND_AREA_ORDER: AreaTag[] = [
+  "東北",
+  "関東",
+  "中部",
+  "関西",
+  "中国・四国",
+  "九州",
+];
+
+const REMOTE_PREFECTURES = new Set(["北海道", "沖縄県"]);
+
+function parseBudgetAmount(budgetLabel: string) {
+  const digits = budgetLabel.replace(/[^\d]/g, "");
+  return Number(digits || "0");
+}
+
+function roundBudgetAmount(amount: number) {
+  return Math.max(8_000, Math.round(amount / 1_000) * 1_000);
+}
+
+function getAreaDistance(left: AreaTag, right: AreaTag) {
+  const leftIndex = MAINLAND_AREA_ORDER.indexOf(left);
+  const rightIndex = MAINLAND_AREA_ORDER.indexOf(right);
+
+  if (leftIndex === -1 || rightIndex === -1) {
+    return 2;
+  }
+
+  return Math.abs(leftIndex - rightIndex);
+}
+
+export function getBudgetTagForAmount(amount: number): TravelBudgetTag {
+  if (amount <= 20_000) {
+    return "〜2万";
+  }
+
+  if (amount < 50_000) {
+    return "2〜5万";
+  }
+
+  return "5万〜";
+}
+
+export function estimateBudgetAmount(
+  destination: Destination,
+  originPrefecture?: string | null,
+) {
+  const baseAmount = parseBudgetAmount(destination.budget);
+
+  if (!originPrefecture) {
+    return baseAmount;
+  }
+
+  const origin = findDestinationByPrefecture(originPrefecture);
+
+  if (!origin) {
+    return baseAmount;
+  }
+
+  if (origin.prefecture === destination.prefecture) {
+    return roundBudgetAmount(baseAmount * 0.45);
+  }
+
+  const areaDistance = getAreaDistance(origin.areas[0], destination.areas[0]);
+  let factor = 0.72 + areaDistance * 0.12;
+
+  const originIsRemote = REMOTE_PREFECTURES.has(origin.prefecture);
+  const destinationIsRemote = REMOTE_PREFECTURES.has(destination.prefecture);
+
+  if (originIsRemote || destinationIsRemote) {
+    factor += originIsRemote && destinationIsRemote ? 0.18 : 0.3;
+  }
+
+  return roundBudgetAmount(baseAmount * factor);
+}
+
+export function getDestinationBudgetTags(
+  destination: Destination,
+  originPrefecture?: string | null,
+) {
+  if (!originPrefecture) {
+    return destination.budgetTags;
+  }
+
+  return [getBudgetTagForAmount(estimateBudgetAmount(destination, originPrefecture))];
+}
+
+export function formatBudgetLabel(
+  destination: Destination,
+  originPrefecture?: string | null,
+) {
+  const amount = estimateBudgetAmount(destination, originPrefecture);
+  return `${amount.toLocaleString("ja-JP")}円前後`;
+}
+
+export function formatBudgetCaption(originPrefecture?: string | null) {
+  if (!originPrefecture) {
+    return "現在地未設定のため、一般的な旅行予算の目安です。";
+  }
+
+  return `${originPrefecture} から出発する想定の目安です。`;
 }

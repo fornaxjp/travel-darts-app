@@ -2,6 +2,9 @@ import type { Destination } from "@/lib/destinations";
 
 type ResultPanelProps = {
   destination: Destination | null;
+  budgetTitle: string;
+  budgetLabel: string;
+  budgetCaption: string;
   onRetry: () => void;
   onShare: () => void;
   shareLabel: string;
@@ -9,6 +12,9 @@ type ResultPanelProps = {
 
 export function ResultPanel({
   destination,
+  budgetTitle,
+  budgetLabel,
+  budgetCaption,
   onRetry,
   onShare,
   shareLabel,
@@ -60,9 +66,10 @@ export function ResultPanel({
         </div>
         <div className="rounded-[26px] border border-black/[0.06] bg-[#fbfcff] p-5 shadow-soft">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-black/40">
-            目安予算
+            {budgetTitle}
           </p>
-          <p className="mt-3 text-sm leading-7 text-black/78">{destination.budget}</p>
+          <p className="mt-3 text-sm leading-7 text-black/78">{budgetLabel}</p>
+          <p className="mt-2 text-xs leading-6 text-black/50">{budgetCaption}</p>
         </div>
       </div>
 

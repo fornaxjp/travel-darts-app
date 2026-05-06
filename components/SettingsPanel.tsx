@@ -1,10 +1,12 @@
 import type { ReactNode } from "react";
 
 import {
+  AREA_LABELS,
   AREA_OPTIONS,
   BUDGET_OPTIONS,
   DART_STYLES,
   DURATION_OPTIONS,
+  PREFECTURE_OPTIONS,
   STYLE_OPTIONS,
   type AreaTag,
   type DartStyleId,
@@ -23,7 +25,10 @@ type FilterState = {
 type SettingsPanelProps = {
   filters: FilterState;
   selectedStyleId: DartStyleId;
+  originPrefecture: string;
   onSelectStyle: (styleId: DartStyleId) => void;
+  onChangeOrigin: (prefecture: string) => void;
+  onClearOrigin: () => void;
   onToggleArea: (area: AreaTag) => void;
   onToggleBudget: (budget: TravelBudgetTag) => void;
   onToggleDuration: (duration: TravelDurationTag) => void;
@@ -82,7 +87,10 @@ function SectionShell({
 export function SettingsPanel({
   filters,
   selectedStyleId,
+  originPrefecture,
   onSelectStyle,
+  onChangeOrigin,
+  onClearOrigin,
   onToggleArea,
   onToggleBudget,
   onToggleDuration,
@@ -131,13 +139,46 @@ export function SettingsPanel({
         </div>
       </SectionShell>
 
-      <SectionShell title="エリア" caption="全国を選ぶと、地域の絞り込みを外せます。">
+      <SectionShell
+        title="現在地"
+        caption="入力した都道府県からの移動を前提に、予算の目安を計算します。"
+      >
+        <div className="space-y-3">
+          <select
+            value={originPrefecture}
+            onChange={(event) => onChangeOrigin(event.target.value)}
+            className="w-full rounded-2xl border border-black/[0.08] bg-[#f8fafc] px-4 py-3 text-sm text-black/80 outline-none transition focus:border-brand focus:bg-white"
+          >
+            <option value="">未設定（全国向けの目安）</option>
+            {PREFECTURE_OPTIONS.map((prefecture) => (
+              <option key={prefecture} value={prefecture}>
+                {prefecture}
+              </option>
+            ))}
+          </select>
+
+          {originPrefecture ? (
+            <button
+              type="button"
+              onClick={onClearOrigin}
+              className="rounded-full border border-black/[0.06] bg-white px-4 py-2 text-xs font-medium text-black/62 transition hover:border-black/[0.1]"
+            >
+              現在地をクリア
+            </button>
+          ) : null}
+        </div>
+      </SectionShell>
+
+      <SectionShell
+        title="エリア"
+        caption="北海道は東北、沖縄は九州に含めて抽選します。全国を選ぶと絞り込みを外せます。"
+      >
         <div className="flex flex-wrap gap-3">
           {AREA_OPTIONS.map((area) => (
             <FilterChip
               key={area}
               active={filters.areas.includes(area)}
-              label={area}
+              label={AREA_LABELS[area]}
               onClick={() => onToggleArea(area)}
             />
           ))}
