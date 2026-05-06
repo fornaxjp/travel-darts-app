@@ -446,50 +446,56 @@ export function TravelDartsApp() {
       : "条件に合う行き先がありません。設定タブでフィルターを調整してください";
 
   return (
-    <main className="px-4 py-6">
-      <div className="mx-auto flex min-h-[calc(100vh-3rem)] max-w-[480px] flex-col gap-4">
-        <section className="paper-panel rounded-[32px] border-2 border-black p-5 shadow-pop">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <main className="px-4 py-8 sm:px-6">
+      <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-[620px] flex-col gap-5">
+        <section className="paper-panel rounded-[30px] border border-black/10 p-6 shadow-elevated">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.24em] text-black/45">
-                Wasabi Trip Game
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-black/40">
+                Travel Darts
               </p>
-              <h1 className="mt-2 font-heading text-[2.3rem] font-semibold leading-[0.95] text-sumi sm:text-[2.6rem]">
+              <h1 className="mt-3 font-heading text-[2.3rem] font-semibold leading-[0.98] tracking-tight text-sumi sm:text-[2.8rem]">
                 旅●ダーツ
               </h1>
-              <p className="mt-3 text-sm leading-7 text-black/70">
-                ひと投げで、次の日本旅を決める和ポップなダーツアプリ。
+              <p className="mt-3 max-w-[30rem] text-sm leading-7 text-black/60">
+                旅先をひと投げで決める、少し落ち着いた雰囲気のトラベルダーツ。
               </p>
             </div>
-            <div className="w-fit rounded-[20px] border-2 border-black bg-shuiro px-3 py-2 text-left text-white shadow-pop-sm sm:text-right">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/75">
-                Realtime
+            <div className="w-fit rounded-[20px] border border-black/10 bg-white/70 px-4 py-3 text-left shadow-soft sm:min-w-[9rem] sm:text-right">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/40">
+                Mode
               </p>
-              <p className="mt-1 text-sm font-semibold">
+              <p className="mt-1 text-sm font-medium text-black/80">
                 {mode === "group" ? "みんなで" : "ひとり旅"}
               </p>
             </div>
           </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => handleModeChange("solo")}
-              className={`rounded-2xl border-2 border-black px-4 py-3 text-sm font-bold shadow-pop-sm ${
-                mode === "solo" ? "bg-black text-white" : "bg-white text-black"
-              }`}
-            >
-              ひとり旅
-            </button>
-            <button
-              type="button"
-              onClick={() => handleModeChange("group")}
-              className={`rounded-2xl border-2 border-black px-4 py-3 text-sm font-bold shadow-pop-sm ${
-                mode === "group" ? "bg-mizu text-white" : "bg-white text-black"
-              }`}
-            >
-              みんなで
-            </button>
+          <div className="mt-6 rounded-[20px] bg-black/[0.04] p-1.5">
+            <div className="grid grid-cols-2 gap-1.5">
+              <button
+                type="button"
+                onClick={() => handleModeChange("solo")}
+                className={`rounded-[16px] px-4 py-3 text-sm font-medium transition ${
+                  mode === "solo"
+                    ? "bg-white text-sumi shadow-soft"
+                    : "text-black/60 hover:text-black/80"
+                }`}
+              >
+                ひとり旅
+              </button>
+              <button
+                type="button"
+                onClick={() => handleModeChange("group")}
+                className={`rounded-[16px] px-4 py-3 text-sm font-medium transition ${
+                  mode === "group"
+                    ? "bg-white text-sumi shadow-soft"
+                    : "text-black/60 hover:text-black/80"
+                }`}
+              >
+                みんなで
+              </button>
+            </div>
           </div>
         </section>
 
@@ -503,7 +509,7 @@ export function TravelDartsApp() {
           />
         ) : null}
 
-        <section className="paper-panel flex-1 rounded-[32px] border-2 border-black p-5 shadow-pop">
+        <section className="paper-panel flex-1 rounded-[30px] border border-black/10 p-5 shadow-elevated sm:p-6">
           {activeTab === "settings" ? (
             <SettingsPanel
               filters={filters}
@@ -520,7 +526,7 @@ export function TravelDartsApp() {
           {activeTab === "darts" ? (
             <div className="space-y-4">
               {!hasSupabaseEnv() && mode === "group" ? (
-                <div className="rounded-[20px] border-2 border-black bg-[#fff2db] px-4 py-3 text-sm text-black shadow-pop-sm">
+                <div className="rounded-[22px] border border-[#d5b88e] bg-[#f9f1e2] px-4 py-4 text-sm leading-7 text-black/70 shadow-soft">
                   Supabase の環境変数が未設定のため、今はこの端末上で演出確認まで動作します。Realtime 同期を有効にする場合は
                   <span className="font-semibold"> .env.local </span>
                   に
@@ -542,12 +548,12 @@ export function TravelDartsApp() {
                 helperText={helperText}
               />
 
-              <div className="rounded-[22px] border-2 border-black bg-white px-4 py-4 shadow-pop-sm">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-black/45">
+              <div className="rounded-[22px] border border-black/10 bg-white/80 px-4 py-4 shadow-soft">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-black/40">
                   Current Settings
                 </p>
-                <p className="mt-2 text-sm leading-7 text-black/75">
-                  的スタイルは「{selectedStyle.emoji} {selectedStyle.label}」を選択中。命中から0.8秒後に自動で結果タブへ移動します。
+                <p className="mt-2 text-sm leading-7 text-black/70">
+                  的スタイルは「{selectedStyle.emoji} {selectedStyle.label}」。命中後は少し間を置いて、結果タブへ自動で移動します。
                 </p>
               </div>
             </div>
@@ -563,17 +569,17 @@ export function TravelDartsApp() {
           ) : null}
         </section>
 
-        <nav className="sticky bottom-3 z-10 rounded-[28px] border-2 border-black bg-black p-2 shadow-pop">
+        <nav className="sticky bottom-4 z-10 rounded-[24px] border border-black/10 bg-white/90 p-1.5 shadow-elevated backdrop-blur">
           <ul className="grid grid-cols-3 gap-2">
             {tabs.map((tab) => (
               <li key={tab.id}>
                 <button
                   type="button"
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full rounded-2xl px-3 py-3 text-sm font-bold transition ${
+                  className={`w-full rounded-[18px] px-3 py-3 text-sm font-medium transition ${
                     activeTab === tab.id
-                      ? "bg-washi text-black"
-                      : "bg-transparent text-white/80"
+                      ? "bg-sumi text-white shadow-soft"
+                      : "bg-transparent text-black/60 hover:text-black/80"
                   }`}
                 >
                   {tab.label}

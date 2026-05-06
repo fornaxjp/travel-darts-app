@@ -41,12 +41,12 @@ function FilterChip({ active, label, onClick, accent = false }: ChipProps) {
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border-2 border-black px-4 py-2 text-sm font-semibold shadow-pop-sm transition ${
+      className={`rounded-full border px-4 py-2.5 text-sm font-medium shadow-soft transition ${
         active
           ? accent
-            ? "bg-mizu text-white"
-            : "bg-shuiro text-white"
-          : "bg-white text-black"
+            ? "border-shuiro/20 bg-shuiro/10 text-shuiro"
+            : "border-sumi bg-sumi text-white"
+          : "border-black/10 bg-white/80 text-black/70 hover:bg-white"
       }`}
     >
       {label}
@@ -57,8 +57,8 @@ function FilterChip({ active, label, onClick, accent = false }: ChipProps) {
 function SectionTitle({ title, caption }: { title: string; caption?: string }) {
   return (
     <div className="space-y-1">
-      <h3 className="font-heading text-xl font-semibold text-sumi">{title}</h3>
-      {caption ? <p className="text-xs text-black/60">{caption}</p> : null}
+      <h3 className="font-heading text-[1.15rem] font-semibold text-sumi">{title}</h3>
+      {caption ? <p className="text-sm leading-6 text-black/60">{caption}</p> : null}
     </div>
   );
 }
@@ -74,45 +74,47 @@ export function SettingsPanel({
   matchCount,
 }: SettingsPanelProps) {
   return (
-    <section className="space-y-7">
-      <div className="rounded-[24px] border-2 border-black bg-white px-4 py-4 shadow-pop">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-black/50">
+    <section className="space-y-8">
+      <div className="rounded-[26px] border border-black/10 bg-white/75 px-5 py-5 shadow-soft">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-black/40">
           Match Count
         </p>
-        <div className="mt-2 flex items-end justify-between gap-4">
+        <div className="mt-3 flex items-end justify-between gap-4">
           <div>
-            <p className="font-heading text-3xl font-semibold text-sumi">{matchCount}</p>
-            <p className="text-sm text-black/70">現在の条件でヒットする行き先</p>
+            <p className="font-heading text-3xl font-semibold tracking-tight text-sumi">
+              {matchCount}
+            </p>
+            <p className="mt-1 text-sm text-black/60">現在の条件で候補に残る行き先</p>
           </div>
-          <p className="rounded-full border-2 border-black bg-washi px-3 py-1 text-xs font-bold">
+          <p className="rounded-full bg-black/[0.05] px-3 py-1 text-xs font-medium text-black/60">
             47都道府県を収録
           </p>
         </div>
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="的のスタイル選択" />
+        <SectionTitle title="的のスタイル" />
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {DART_STYLES.map((style) => (
             <button
               key={style.id}
               type="button"
               onClick={() => onSelectStyle(style.id)}
-              className={`rounded-2xl border-2 border-black px-4 py-4 text-left shadow-pop-sm transition ${
+              className={`rounded-[22px] border px-4 py-4 text-left shadow-soft transition ${
                 selectedStyleId === style.id
-                  ? "bg-shuiro text-white"
-                  : "bg-white text-black"
+                  ? "border-shuiro/20 bg-[#fbf1ee] text-sumi"
+                  : "border-black/10 bg-white/80 text-black/80 hover:bg-white"
               }`}
             >
-              <div className="text-2xl">{style.emoji}</div>
-              <p className="mt-2 text-sm font-bold">{style.label}</p>
+              <div className="text-[1.75rem]">{style.emoji}</div>
+              <p className="mt-3 text-sm font-medium">{style.label}</p>
             </button>
           ))}
         </div>
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="エリアフィルター" caption="全国は全解除の代わりにも使えます" />
+        <SectionTitle title="エリア" caption="全国を選ぶと、地域の絞り込みを外せます。" />
         <div className="flex flex-wrap gap-3">
           {AREA_OPTIONS.map((area) => (
             <FilterChip

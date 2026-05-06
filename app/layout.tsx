@@ -20,7 +20,7 @@ const zenKakuGothic = Zen_Kaku_Gothic_New({
 
 export const metadata: Metadata = {
   title: "旅●ダーツ",
-  description: "ダーツを投げて旅先を決める和ポップ旅行アプリ",
+  description: "ダーツを投げて旅先を決める、落ち着いた雰囲気の旅行アプリ",
 };
 
 export default function RootLayout({

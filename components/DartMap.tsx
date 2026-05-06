@@ -276,14 +276,14 @@ export function DartMap({
   }, [currentThrow, imageReady, paintStaticMarker]);
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-5">
       <div
-        className={`${styles.statusPill} rounded-full border-2 border-black bg-white/90 px-4 py-2 text-sm font-semibold text-black shadow-pop-sm`}
+        className={`${styles.statusPill} rounded-full border border-black/10 bg-white/80 px-4 py-3 text-sm text-black/70 shadow-soft`}
       >
         {helperText}
       </div>
 
-      <div ref={wrapperRef} className={`${styles.mapShell} rounded-[26px]`}>
+      <div ref={wrapperRef} className={`${styles.mapShell} rounded-[28px]`}>
         <img
           ref={imageRef}
           src="/japan-map.png?v=20260505-1"
@@ -294,12 +294,12 @@ export function DartMap({
         <canvas ref={canvasRef} className={styles.mapCanvas} />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid gap-3 sm:grid-cols-2">
         <button
           type="button"
           onClick={onThrow}
           disabled={disabled}
-          className={`${styles.throwButton} flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl border-2 border-black bg-shuiro px-3 py-4 text-[13px] font-bold text-white shadow-pop disabled:cursor-not-allowed disabled:bg-black/30 disabled:shadow-none sm:px-4 sm:text-sm`}
+          className={`${styles.throwButton} flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl bg-shuiro px-4 py-4 text-sm font-medium text-white shadow-soft disabled:cursor-not-allowed disabled:bg-black/25 disabled:shadow-none`}
         >
           <span aria-hidden="true">🎯</span>
           <span>ダーツを投げる！</span>
@@ -307,7 +307,7 @@ export function DartMap({
         <button
           type="button"
           onClick={onReset}
-          className="flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl border-2 border-black bg-white px-3 py-4 text-[13px] font-bold text-black shadow-pop sm:px-4 sm:text-sm"
+          className="flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl border border-black/10 bg-white/80 px-4 py-4 text-sm font-medium text-black/80 shadow-soft transition hover:-translate-y-0.5"
         >
           <span aria-hidden="true">↺</span>
           <span>もう一回</span>

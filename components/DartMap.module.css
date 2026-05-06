@@ -1,17 +1,9 @@
 .mapShell {
   position: relative;
   overflow: hidden;
-  border: 2px solid #000;
-  background:
-    linear-gradient(180deg, rgba(255, 250, 241, 0.85), rgba(244, 235, 216, 0.9)),
-    repeating-linear-gradient(
-      -45deg,
-      rgba(0, 0, 0, 0.018) 0,
-      rgba(0, 0, 0, 0.018) 2px,
-      transparent 2px,
-      transparent 8px
-    );
-  box-shadow: 8px 8px 0 0 #000;
+  border: 1px solid rgba(22, 22, 22, 0.1);
+  background: linear-gradient(180deg, rgba(255, 251, 246, 0.94), rgba(246, 239, 229, 0.9));
+  box-shadow: 0 20px 44px rgba(45, 41, 38, 0.1);
   animation: settle 360ms ease-out;
 }
 
@@ -32,13 +24,13 @@
 }
 
 .throwButton:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0 0 #000;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(45, 41, 38, 0.14);
 }
 
 .throwButton:active {
-  transform: translate(4px, 4px);
-  box-shadow: 0 0 0 0 #000;
+  transform: translateY(0);
+  box-shadow: 0 10px 18px rgba(45, 41, 38, 0.12);
 }
 
 .statusPill {
@@ -62,6 +54,6 @@
     box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.08);
   }
   50% {
-    box-shadow: 0 0 0 10px rgba(192, 57, 43, 0);
+    box-shadow: 0 0 0 8px rgba(192, 57, 43, 0);
   }
 }

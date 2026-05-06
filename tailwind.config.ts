@@ -15,10 +15,14 @@ const config: Config = {
         sumi: "#161616",
         ink: "#2d2926",
         cream: "#fffaf1",
+        sand: "#e7ddd0",
+        mist: "#fbf7f0",
       },
       boxShadow: {
         pop: "6px 6px 0 0 #000",
         "pop-sm": "4px 4px 0 0 #000",
+        soft: "0 12px 28px rgba(45, 41, 38, 0.08)",
+        elevated: "0 22px 48px rgba(45, 41, 38, 0.11)",
       },
       fontFamily: {
         heading: "var(--font-heading)",

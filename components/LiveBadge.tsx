@@ -14,25 +14,25 @@ export function LiveBadge({
   shareLabel,
 }: LiveBadgeProps) {
   return (
-    <section className="space-y-3 rounded-[24px] border-2 border-black bg-white p-4 shadow-pop">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <span className="flex items-center gap-2 rounded-full border-2 border-black bg-black px-3 py-1 text-xs font-bold text-white">
-            <span className="inline-block h-2.5 w-2.5 rounded-full bg-shuiro animate-live-blink" />
+    <section className="space-y-4 rounded-[26px] border border-black/10 bg-white/90 p-4 shadow-soft">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-3">
+          <span className="flex items-center gap-2 rounded-full border border-shuiro/15 bg-shuiro/10 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-shuiro">
+            <span className="inline-block h-2 w-2 rounded-full bg-shuiro animate-live-blink" />
             LIVE
           </span>
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-black/40">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-black/40">
               Room {roomId}
             </p>
-            <p className="text-sm font-semibold text-black">{statusLabel}</p>
+            <p className="mt-1 text-sm text-black/80">{statusLabel}</p>
           </div>
         </div>
 
         <button
           type="button"
           onClick={onShareRoom}
-          className="rounded-full border-2 border-black bg-washi px-3 py-2 text-xs font-bold text-black shadow-pop-sm"
+          className="rounded-full border border-black/10 bg-white px-3 py-2 text-xs font-medium text-black/70 shadow-soft transition hover:-translate-y-0.5"
         >
           URL共有
         </button>
@@ -42,14 +42,14 @@ export function LiveBadge({
         {participants.map((participant) => (
           <span
             key={participant}
-            className="rounded-full border-2 border-black bg-cream px-3 py-1 text-xs font-semibold text-black shadow-pop-sm"
+            className="rounded-full border border-black/10 bg-[#faf6ef] px-3 py-1 text-xs font-medium text-black/70"
           >
             {participant}
           </span>
         ))}
       </div>
 
-      <p className="text-xs text-black/60">{shareLabel}</p>
+      <p className="text-xs leading-6 text-black/60">{shareLabel}</p>
     </section>
   );
 }
