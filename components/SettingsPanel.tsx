@@ -26,9 +26,16 @@ type SettingsPanelProps = {
   filters: FilterState;
   selectedStyleId: DartStyleId;
   originPrefecture: string;
+  departureDate: string;
+  nights: number;
+  adults: number;
+  minimumDate: string;
   onSelectStyle: (styleId: DartStyleId) => void;
   onChangeOrigin: (prefecture: string) => void;
   onClearOrigin: () => void;
+  onChangeDepartureDate: (value: string) => void;
+  onChangeNights: (value: number) => void;
+  onChangeAdults: (value: number) => void;
   onToggleArea: (area: AreaTag) => void;
   onToggleBudget: (budget: TravelBudgetTag) => void;
   onToggleDuration: (duration: TravelDurationTag) => void;
@@ -88,9 +95,16 @@ export function SettingsPanel({
   filters,
   selectedStyleId,
   originPrefecture,
+  departureDate,
+  nights,
+  adults,
+  minimumDate,
   onSelectStyle,
   onChangeOrigin,
   onClearOrigin,
+  onChangeDepartureDate,
+  onChangeNights,
+  onChangeAdults,
   onToggleArea,
   onToggleBudget,
   onToggleDuration,
@@ -166,6 +180,54 @@ export function SettingsPanel({
               現在地をクリア
             </button>
           ) : null}
+        </div>
+      </SectionShell>
+
+      <SectionShell
+        title="プラン条件"
+        caption="結果タブのホテル・飛行機・時期提案に使います。"
+      >
+        <div className="grid gap-3 sm:grid-cols-3">
+          <label className="space-y-2">
+            <span className="text-xs font-medium text-black/52">出発日</span>
+            <input
+              type="date"
+              min={minimumDate}
+              value={departureDate}
+              onChange={(event) => onChangeDepartureDate(event.target.value)}
+              className="w-full rounded-2xl border border-black/[0.08] bg-[#f8fafc] px-4 py-3 text-sm text-black/80 outline-none transition focus:border-brand focus:bg-white"
+            />
+          </label>
+
+          <label className="space-y-2">
+            <span className="text-xs font-medium text-black/52">泊数</span>
+            <select
+              value={nights}
+              onChange={(event) => onChangeNights(Number(event.target.value))}
+              className="w-full rounded-2xl border border-black/[0.08] bg-[#f8fafc] px-4 py-3 text-sm text-black/80 outline-none transition focus:border-brand focus:bg-white"
+            >
+              {[1, 2, 3, 4, 5, 6, 7].map((value) => (
+                <option key={value} value={value}>
+                  {value}泊
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="space-y-2">
+            <span className="text-xs font-medium text-black/52">人数</span>
+            <select
+              value={adults}
+              onChange={(event) => onChangeAdults(Number(event.target.value))}
+              className="w-full rounded-2xl border border-black/[0.08] bg-[#f8fafc] px-4 py-3 text-sm text-black/80 outline-none transition focus:border-brand focus:bg-white"
+            >
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((value) => (
+                <option key={value} value={value}>
+                  {value}名
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
       </SectionShell>
 

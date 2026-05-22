@@ -37,10 +37,6 @@ export function ResultPanel({
     );
   }
 
-  const planUrl = `https://www.google.com/search?q=${encodeURIComponent(
-    `${destination.prefecture} 旅行プラン おすすめ`,
-  )}`;
-
   return (
     <section className="space-y-4">
       <div className="relative overflow-hidden rounded-[32px] border border-black/[0.06] bg-white/92 p-7 shadow-elevated">
@@ -82,12 +78,10 @@ export function ResultPanel({
 
       <div className="grid gap-3 sm:grid-cols-2">
         <a
-          href={planUrl}
-          target="_blank"
-          rel="noreferrer"
+          href="#travel-plan"
           className="rounded-2xl bg-brand px-4 py-4 text-center text-sm font-medium text-white shadow-soft transition hover:-translate-y-0.5"
         >
-          プランを作る
+          現実プランを見る
         </a>
         <button
           type="button"

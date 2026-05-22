@@ -6,6 +6,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { DartMap } from "@/components/DartMap";
 import { LiveBadge } from "@/components/LiveBadge";
+import { PlanPanel } from "@/components/PlanPanel";
 import { ResultPanel } from "@/components/ResultPanel";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import {
@@ -63,6 +64,16 @@ function makeParticipantName() {
   return `旅人-${makeShortId()}`;
 }
 
+function getLocalIsoDate(offsetDays = 0) {
+  const date = new Date();
+  date.setDate(date.getDate() + offsetDays);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 function getRandomDestination(items: Destination[]) {
   return items[Math.floor(Math.random() * items.length)];
 }
@@ -101,6 +112,9 @@ export function TravelDartsApp() {
   const [selectedStyleId, setSelectedStyleId] = useState<DartStyleId>("pin");
   const [lastThrowStyleId, setLastThrowStyleId] = useState<DartStyleId>("pin");
   const [originPrefecture, setOriginPrefecture] = useState("");
+  const [departureDate, setDepartureDate] = useState(() => getLocalIsoDate(14));
+  const [planNights, setPlanNights] = useState(1);
+  const [planAdults, setPlanAdults] = useState(1);
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [currentThrow, setCurrentThrow] = useState<ThrowAnimation | null>(null);
   const [roomId, setRoomId] = useState(roomFromUrl);
@@ -179,9 +193,16 @@ export function TravelDartsApp() {
     }
 
     const storedOrigin = window.localStorage.getItem("travel-darts-origin-prefecture") ?? "";
+    const storedDepartureDate =
+      window.localStorage.getItem("travel-darts-departure-date") ?? getLocalIsoDate(14);
+    const storedNights = Number(window.localStorage.getItem("travel-darts-plan-nights") ?? "1");
+    const storedAdults = Number(window.localStorage.getItem("travel-darts-plan-adults") ?? "1");
     const stored =
       window.localStorage.getItem("travel-darts-participant-name") ?? makeParticipantName();
     setOriginPrefecture(storedOrigin);
+    setDepartureDate(storedDepartureDate);
+    setPlanNights(Math.min(7, Math.max(1, storedNights || 1)));
+    setPlanAdults(Math.min(8, Math.max(1, storedAdults || 1)));
     window.localStorage.setItem("travel-darts-participant-name", stored);
     setParticipantName(stored);
     setParticipants([stored]);
@@ -199,6 +220,30 @@ export function TravelDartsApp() {
 
     window.localStorage.removeItem("travel-darts-origin-prefecture");
   }, [originPrefecture]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.localStorage.setItem("travel-darts-departure-date", departureDate);
+  }, [departureDate]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.localStorage.setItem("travel-darts-plan-nights", String(planNights));
+  }, [planNights]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.localStorage.setItem("travel-darts-plan-adults", String(planAdults));
+  }, [planAdults]);
 
   useEffect(() => {
     return () => {
@@ -397,6 +442,18 @@ export function TravelDartsApp() {
     setOriginPrefecture("");
   }, []);
 
+  const handleDepartureDateChange = useCallback((value: string) => {
+    setDepartureDate(value || getLocalIsoDate(14));
+  }, []);
+
+  const handlePlanNightsChange = useCallback((value: number) => {
+    setPlanNights(Math.min(7, Math.max(1, value)));
+  }, []);
+
+  const handlePlanAdultsChange = useCallback((value: number) => {
+    setPlanAdults(Math.min(8, Math.max(1, value)));
+  }, []);
+
   const handleToggleDuration = useCallback((duration: TravelDurationTag) => {
     setFilters((current) => ({
       ...current,
@@ -474,6 +531,7 @@ export function TravelDartsApp() {
     ? formatBudgetLabel(selectedDestination, originPrefecture)
     : "";
   const selectedBudgetCaption = formatBudgetCaption(originPrefecture);
+  const minimumPlanDate = getLocalIsoDate(0);
 
   const helperText =
     visibleDestinations.length > 0
@@ -550,9 +608,16 @@ export function TravelDartsApp() {
               filters={filters}
               selectedStyleId={selectedStyleId}
               originPrefecture={originPrefecture}
+              departureDate={departureDate}
+              nights={planNights}
+              adults={planAdults}
+              minimumDate={minimumPlanDate}
               onSelectStyle={setSelectedStyleId}
               onChangeOrigin={handleOriginChange}
               onClearOrigin={handleOriginClear}
+              onChangeDepartureDate={handleDepartureDateChange}
+              onChangeNights={handlePlanNightsChange}
+              onChangeAdults={handlePlanAdultsChange}
               onToggleArea={handleToggleArea}
               onToggleBudget={handleToggleBudget}
               onToggleDuration={handleToggleDuration}
@@ -601,15 +666,24 @@ export function TravelDartsApp() {
           ) : null}
 
           {activeTab === "result" ? (
-            <ResultPanel
-              destination={selectedDestination}
-              budgetTitle={selectedBudgetTitle}
-              budgetLabel={selectedBudgetLabel}
-              budgetCaption={selectedBudgetCaption}
-              onRetry={handleRetry}
-              onShare={handleShareResult}
-              shareLabel={resultShareLabel}
-            />
+            <div className="space-y-5">
+              <ResultPanel
+                destination={selectedDestination}
+                budgetTitle={selectedBudgetTitle}
+                budgetLabel={selectedBudgetLabel}
+                budgetCaption={selectedBudgetCaption}
+                onRetry={handleRetry}
+                onShare={handleShareResult}
+                shareLabel={resultShareLabel}
+              />
+              <PlanPanel
+                destination={selectedDestination}
+                originPrefecture={originPrefecture}
+                departureDate={departureDate}
+                nights={planNights}
+                adults={planAdults}
+              />
+            </div>
           ) : null}
         </section>
 
