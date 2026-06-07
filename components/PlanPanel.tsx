@@ -328,6 +328,41 @@ export function PlanPanel({
             </div>
           </div>
 
+          <div className="space-y-3">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-black/40">
+              地元ごはん
+            </p>
+            <div className="grid gap-3">
+              {plan.restaurantOptions.map((restaurant) => (
+                <a
+                  key={`${restaurant.name}-${restaurant.ratingLabel}`}
+                  href={restaurant.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-[24px] border border-black/[0.06] bg-white p-5 shadow-soft transition hover:-translate-y-0.5"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-semibold text-sumi">{restaurant.name}</p>
+                      <p className="mt-2 text-sm leading-7 text-black/62">{restaurant.detail}</p>
+                    </div>
+                    <span className="rounded-full bg-[#f7f9fc] px-3 py-1 text-[11px] font-medium text-black/55">
+                      {restaurant.source}
+                    </span>
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <span className="rounded-full border border-black/[0.06] bg-[#f8fafc] px-3 py-1 text-xs font-medium text-black/62">
+                      {restaurant.area}
+                    </span>
+                    <span className="rounded-full border border-black/[0.06] bg-[#f8fafc] px-3 py-1 text-xs font-medium text-black/62">
+                      {restaurant.ratingLabel}
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+
           {plan.notes.length > 0 ? (
             <div className="rounded-[24px] border border-black/[0.06] bg-[#f8fafc] p-5 shadow-soft">
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-black/40">

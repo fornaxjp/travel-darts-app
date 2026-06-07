@@ -9,7 +9,7 @@ import { getPrefectureMeta, type PrefectureMeta } from "@/lib/prefecture-meta";
 type ProviderState = "live" | "fallback" | "unavailable" | "error";
 
 export type ProviderStatus = {
-  id: "weather" | "hotels" | "flights" | "transport";
+  id: "weather" | "hotels" | "flights" | "transport" | "restaurants";
   label: string;
   state: ProviderState;
   message: string;
@@ -54,6 +54,15 @@ export type FlightOption = {
   source: string;
 };
 
+export type RestaurantOption = {
+  name: string;
+  area: string;
+  ratingLabel: string;
+  detail: string;
+  url: string;
+  source: string;
+};
+
 export type TravelPlanResponse = {
   destination: string;
   originPrefecture: string | null;
@@ -71,6 +80,7 @@ export type TravelPlanResponse = {
   hotelOptions: HotelOption[];
   transportOptions: TransportOption[];
   flightOptions: FlightOption[];
+  restaurantOptions: RestaurantOption[];
   providerStatuses: ProviderStatus[];
   notes: string[];
 };
@@ -102,6 +112,57 @@ type TravelRequestContext = {
 
 const AREA_ORDER: AreaTag[] = ["東北", "関東", "中部", "関西", "中国・四国", "九州"];
 const REMOTE_PREFECTURES = new Set(["北海道", "沖縄県"]);
+const MIN_RESTAURANT_RATING = 3.5;
+
+const LOCAL_FOOD_KEYWORDS: Record<string, string[]> = {
+  北海道: ["海鮮", "ジンギスカン", "スープカレー"],
+  青森県: ["海鮮", "郷土料理", "せんべい汁"],
+  岩手県: ["わんこそば", "前沢牛", "郷土料理"],
+  宮城県: ["牛たん", "海鮮", "ずんだ"],
+  秋田県: ["きりたんぽ", "比内地鶏", "郷土料理"],
+  山形県: ["山形牛", "芋煮", "そば"],
+  福島県: ["喜多方ラーメン", "会津料理", "円盤餃子"],
+  茨城県: ["あんこう", "常陸牛", "納豆料理"],
+  栃木県: ["宇都宮餃子", "湯波", "とちぎ和牛"],
+  群馬県: ["おっきりこみ", "上州牛", "水沢うどん"],
+  埼玉県: ["うなぎ", "武蔵野うどん", "秩父料理"],
+  千葉県: ["海鮮", "なめろう", "房総料理"],
+  東京都: ["江戸前寿司", "もんじゃ", "深川めし"],
+  神奈川県: ["しらす", "中華街", "三崎まぐろ"],
+  新潟県: ["寿司", "へぎそば", "日本酒"],
+  富山県: ["白えび", "寿司", "寒ブリ"],
+  石川県: ["加賀料理", "寿司", "能登牛"],
+  福井県: ["越前そば", "海鮮", "ソースカツ丼"],
+  山梨県: ["ほうとう", "甲州牛", "ワイン"],
+  長野県: ["信州そば", "山賊焼き", "信州牛"],
+  岐阜県: ["飛騨牛", "郷土料理", "鮎"],
+  静岡県: ["うなぎ", "海鮮", "静岡おでん"],
+  愛知県: ["ひつまぶし", "味噌カツ", "名古屋めし"],
+  三重県: ["伊勢海老", "松阪牛", "伊勢うどん"],
+  滋賀県: ["近江牛", "鮒寿司", "湖魚料理"],
+  京都府: ["京料理", "湯豆腐", "おばんざい"],
+  大阪府: ["お好み焼き", "串カツ", "たこ焼き"],
+  兵庫県: ["神戸牛", "明石焼き", "但馬牛"],
+  奈良県: ["柿の葉寿司", "大和肉鶏", "三輪そうめん"],
+  和歌山県: ["まぐろ", "和歌山ラーメン", "紀州料理"],
+  鳥取県: ["松葉ガニ", "鳥取和牛", "海鮮"],
+  島根県: ["出雲そば", "のどぐろ", "郷土料理"],
+  岡山県: ["ままかり", "デミカツ丼", "ばら寿司"],
+  広島県: ["お好み焼き", "牡蠣", "穴子"],
+  山口県: ["ふぐ", "瓦そば", "海鮮"],
+  徳島県: ["徳島ラーメン", "阿波尾鶏", "郷土料理"],
+  香川県: ["讃岐うどん", "骨付鳥", "瀬戸内海鮮"],
+  愛媛県: ["鯛めし", "じゃこ天", "瀬戸内海鮮"],
+  高知県: ["カツオ", "皿鉢料理", "土佐料理"],
+  福岡県: ["もつ鍋", "水炊き", "博多ラーメン"],
+  佐賀県: ["佐賀牛", "呼子いか", "嬉野温泉湯どうふ"],
+  長崎県: ["ちゃんぽん", "皿うどん", "卓袱料理"],
+  熊本県: ["馬刺し", "あか牛", "熊本ラーメン"],
+  大分県: ["とり天", "関あじ", "だんご汁"],
+  宮崎県: ["地鶏", "チキン南蛮", "宮崎牛"],
+  鹿児島県: ["黒豚", "さつま揚げ", "鹿児島ラーメン"],
+  沖縄県: ["沖縄料理", "ソーキそば", "島料理"],
+};
 
 function clampNumber(value: number | null | undefined, minimum: number, maximum: number) {
   if (!Number.isFinite(value)) {
@@ -687,6 +748,152 @@ async function getFlightBundle(context: TravelRequestContext): Promise<ProviderB
   }
 }
 
+function getLocalFoodKeywords(prefecture: string) {
+  return LOCAL_FOOD_KEYWORDS[prefecture] ?? ["郷土料理", "地元食材", "海鮮"];
+}
+
+function buildFallbackRestaurants(context: TravelRequestContext) {
+  const keywords = getLocalFoodKeywords(context.destination.prefecture);
+  const area = context.destinationMeta.capital;
+
+  return keywords.slice(0, 3).map((keyword) => ({
+    name: `${area} の ${keyword} 名店候補`,
+    area,
+    ratingLabel: "評価は外部サイトで確認",
+    detail: `${context.destination.prefecture} らしさを出すなら「${keyword}」を軸に探すと、旅の食事が組みやすくなります。`,
+    url: makeGoogleSearchUrl(`${context.destination.prefecture} ${area} ${keyword} 評価 3.5 レストラン`),
+    source: "fallback",
+  })) satisfies RestaurantOption[];
+}
+
+async function getRestaurantBundle(
+  context: TravelRequestContext,
+): Promise<ProviderBundle<RestaurantOption[]>> {
+  const apiKey = process.env.GOOGLE_PLACES_API_KEY?.trim();
+  const keywords = getLocalFoodKeywords(context.destination.prefecture);
+  const textQuery = `${context.destinationMeta.capital} ${keywords.join(" ")} レストラン`;
+
+  if (!apiKey) {
+    return {
+      data: buildFallbackRestaurants(context),
+      status: {
+        id: "restaurants",
+        label: "地元ごはん",
+        state: "fallback",
+        message: "Google Places の API キーが未設定のため、地元グルメの検索候補を表示しています。",
+        source: "fallback",
+      },
+      note: "食べログ点数を取得できる公式公開APIは確認できないため、Google Places の rating 3.5 以上で代替します。",
+    };
+  }
+
+  try {
+    const data = await fetchJson<{
+      places?: Array<{
+        displayName?: { text?: string };
+        formattedAddress?: string;
+        rating?: number;
+        userRatingCount?: number;
+        googleMapsUri?: string;
+        websiteUri?: string;
+        businessStatus?: string;
+      }>;
+    }>(
+      "https://places.googleapis.com/v1/places:searchText",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Goog-Api-Key": apiKey,
+          "X-Goog-FieldMask":
+            "places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.googleMapsUri,places.websiteUri,places.businessStatus",
+        },
+        body: JSON.stringify({
+          textQuery,
+          includedType: "restaurant",
+          strictTypeFiltering: true,
+          languageCode: "ja",
+          regionCode: "JP",
+          minRating: MIN_RESTAURANT_RATING,
+          pageSize: 10,
+          rankPreference: "RELEVANCE",
+          locationBias: {
+            circle: {
+              center: {
+                latitude: context.destinationMeta.latitude,
+                longitude: context.destinationMeta.longitude,
+              },
+              radius: 30_000,
+            },
+          },
+        }),
+      },
+      9_000,
+    );
+
+    const restaurants = (data.places ?? [])
+      .filter((place) => place.businessStatus !== "CLOSED_PERMANENTLY")
+      .filter((place) => (place.rating ?? 0) >= MIN_RESTAURANT_RATING)
+      .sort((left, right) => {
+        const ratingDiff = (right.rating ?? 0) - (left.rating ?? 0);
+        if (ratingDiff !== 0) {
+          return ratingDiff;
+        }
+
+        return (right.userRatingCount ?? 0) - (left.userRatingCount ?? 0);
+      })
+      .slice(0, 3)
+      .map((place) => {
+        const rating = place.rating ?? MIN_RESTAURANT_RATING;
+        const count = place.userRatingCount ?? 0;
+        const name = place.displayName?.text ?? "レストラン";
+
+        return {
+          name,
+          area: place.formattedAddress ?? context.destinationMeta.capital,
+          ratingLabel:
+            count > 0
+              ? `Google ${rating.toFixed(1)} / ${count.toLocaleString("ja-JP")}件`
+              : `Google ${rating.toFixed(1)}以上`,
+          detail: `${keywords.join("・")} など、地元らしい食事のキーワードで絞り込んだ候補です。`,
+          url:
+            place.googleMapsUri ??
+            place.websiteUri ??
+            makeGoogleSearchUrl(`${name} ${context.destination.prefecture}`),
+          source: "Google Places",
+        } satisfies RestaurantOption;
+      });
+
+    if (restaurants.length === 0) {
+      throw new Error("restaurant_not_found");
+    }
+
+    return {
+      data: restaurants,
+      status: {
+        id: "restaurants",
+        label: "地元ごはん",
+        state: "live",
+        message: "Google Places で rating 3.5 以上の地元グルメ候補を表示しています。",
+        source: "Google Places",
+      },
+      note: "食べログ点数そのものではなく、Google Places の rating 3.5 以上を使っています。",
+    };
+  } catch {
+    return {
+      data: buildFallbackRestaurants(context),
+      status: {
+        id: "restaurants",
+        label: "地元ごはん",
+        state: "fallback",
+        message: "Google Places から取得できなかったため、地元グルメの検索候補へ切り替えました。",
+        source: "fallback",
+      },
+      note: "Google Places が返らない場合は、地元料理キーワードから検索候補を表示します。",
+    };
+  }
+}
+
 function estimateRailDuration(areaDistance: number) {
   const hours = 1.8 + areaDistance * 1.9;
   const wholeHours = Math.floor(hours);
@@ -875,10 +1082,11 @@ export async function createTravelPlan(input: TravelPlanInput): Promise<TravelPl
     adults,
   };
 
-  const [weatherBundle, hotelBundle, flightBundle] = await Promise.all([
+  const [weatherBundle, hotelBundle, flightBundle, restaurantBundle] = await Promise.all([
     getWeatherBundle(context),
     getHotelBundle(context),
     getFlightBundle(context),
+    getRestaurantBundle(context),
   ]);
   const transportBundle = buildTransportBundle(context, flightBundle.data);
   const summary = buildSummary(
@@ -892,6 +1100,7 @@ export async function createTravelPlan(input: TravelPlanInput): Promise<TravelPl
     weatherBundle.note,
     hotelBundle.note,
     flightBundle.note,
+    restaurantBundle.note,
     flightBundle.status.state === "live"
       ? "Amadeus Self-Service は一部 LCC や一部航空会社の在庫を含まないことがあります。"
       : null,
@@ -909,10 +1118,12 @@ export async function createTravelPlan(input: TravelPlanInput): Promise<TravelPl
     hotelOptions: hotelBundle.data,
     transportOptions: transportBundle.data,
     flightOptions: flightBundle.data,
+    restaurantOptions: restaurantBundle.data,
     providerStatuses: [
       weatherBundle.status,
       hotelBundle.status,
       flightBundle.status,
+      restaurantBundle.status,
       transportBundle.status,
     ],
     notes,
